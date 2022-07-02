@@ -1,10 +1,11 @@
 import pandas as pd
+from AAC_challenge import utils
 
 import plotly.express as px
 
 def get_age_histogram(df, adoptions_only=False):
     if adoptions_only==True:
-        df = df[df['outcome_type'] == 'Adoptiona']
+        df = df[df['outcome_type'] == 'Adoption']
         title = 'Adoptions only'
     else:
         title = 'All outcomes'
@@ -30,4 +31,14 @@ def get_outcome_timeseries(df):
     fig = px.line(outcome_date, x = 'outcome_year_month', y = 'sex', color = 'outcome_type')
     fig.update_yaxes(title = 'number of outcomes')
     fig.update_xaxes()
+    return fig
+
+def get_top_breeds_pie(df, adoptions_only = False):
+    if adoptions_only==True:
+        df = df[df['outcome_type'] == 'Adoption']
+        title = 'Adoptions only'
+    else:
+        title = 'All outcomes'
+    df['top_breeds'] = df.breed.apply(utils.map_top_breeds)
+    fig = px.pie(df.groupby('top_breeds', as_index=False).count().sort_values('sex', ascending=False), values='sex', names='top_breeds', title=title)
     return fig

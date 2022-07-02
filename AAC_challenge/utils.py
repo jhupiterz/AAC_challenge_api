@@ -23,3 +23,8 @@ def get_adopted_or_not(x):
     if x == 'Adoption':
         return 1
     return 0
+
+def map_top_breeds(x):
+    if (x == 'domestic shorthair') | (x == 'domestic mediumhair') | (x == 'domestic longhair') | (x == 'siamese') | (x == 'american shorthair'):
+        return x
+    return 'other'
