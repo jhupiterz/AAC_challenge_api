@@ -3,7 +3,7 @@ from AAC_challenge import utils
 
 import plotly.express as px
 
-def get_age_histogram(df, adoptions_only=False):
+def get_outcome_age_histogram(df, adoptions_only=False):
     if adoptions_only==True:
         df = df[df['outcome_type'] == 'Adoption']
         title = 'Adoptions only'
@@ -12,11 +12,11 @@ def get_age_histogram(df, adoptions_only=False):
     fig = px.histogram(df, x='outcome_age_(years)', nbins= 30, color = 'sex', title = title)
     return fig
 
-def get_sterilized_histogram(df):
+def get_outcome_sterilized_histogram(df):
     fig = px.histogram(df, x='outcome_type', color = 'sex', pattern_shape="sterilized")
     return fig
 
-def get_weekday_histogram(df):
+def get_outcome_weekday_histogram(df):
     fig = px.histogram(df, x='outcome_weekday', color = 'outcome_type')
     return fig
 

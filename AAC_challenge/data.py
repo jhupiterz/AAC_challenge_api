@@ -49,7 +49,7 @@ def clean_cat_dataset(cat_df):
     cat_df.drop(columns=['index', 'animal_type'], inplace = True)
     # handle datetime columns
     cat_df['date_of_birth'] = pd.to_datetime(cat_df['date_of_birth'])
-    cat_df['datetime'] = pd.to_datetime(cat_df['datetime']).dt.date
+    cat_df['datetime'] = pd.to_datetime(pd.to_datetime(cat_df['datetime']).dt.date)
     cat_df['outcome_year_month'] = pd.to_datetime(cat_df['outcome_year'].astype(str) + '-' + cat_df['outcome_month'].astype(str))
     # rename columns
     cat_df.rename(columns={'datetime': 'outcome_datetime', 'Cat/Kitten (outcome)': 'kitten_outcome',
@@ -80,6 +80,8 @@ def clean_intake_dataset(intake_df, animal_type):
     intake_df['month_week_year'] = intake_df['month_week_year'].apply(utils.get_n_days)
     intake_df['intake_age_days'] = intake_df['n_age'] * intake_df['month_week_year']
     intake_df.drop(columns=['age_upon_intake', 'n_age', 'month_week_year'], inplace=True)
+    # handle intake_datetime
+    intake_df['intake_datetime'] = pd.to_datetime(pd.to_datetime(intake_df['intake_datetime']).dt.date)
     # split sex_upon_intake
     intake_df.sex_upon_intake = intake_df.sex_upon_intake.replace('Unknown', 'Unknown Unknown')
     intake_df['sterilized_intake'] = [x.split()[0] for x in intake_df.sex_upon_intake]
@@ -103,12 +105,27 @@ def merge_intakes_outcomes():
     intakes = get_clean_intake_dataset('intakes', 'cats')
     merged_df = outcomes.merge(intakes, how='left', on='animal_id')
     merged_df.dropna(inplace=True)
+    merged_df['days_spent_at_shelter'] = (merged_df['outcome_datetime'] - merged_df['intake_datetime']).dt.days
+    merged_df['age_diff_days'] = merged_df['outcome_age_(days)'] - merged_df.intake_age_days
+    for index, row in merged_df.iterrows():
+        if row.days_spent_at_shelter < 0:
+            copy = row['outcome_datetime']
+            row['outcome_datetime'] = row['intake_datetime']
+            row['intake_datetime'] = copy
+        elif row.age_diff_days < 0:
+            copy_ = row['outcome_age_(days)']
+            row['outcome_age_(days)'] = row.intake_age_days
+            row.intake_age_days = copy
+    merged_df['days_spent_at_shelter'] = (merged_df['outcome_datetime'] - merged_df['intake_datetime']).dt.days
+    merged_df['age_diff_days'] = merged_df['outcome_age_(days)'] - merged_df.intake_age_days
     return merged_df
 
 def get_X_y():
-    cat_df = get_clean_cat_dataset('cats')
-    features_df = cat_df[['top_breeds', 'top_coats', 'kitten', 'sex', 'sterilized',
-                      'cfa_breed', 'domestic_breed', 'coat_pattern', 'has_name']]
+    cat_df = merge_intakes_outcomes()
+    features_df = cat_df[['top_breeds', 'top_coats', 'kitten_outcome', 'sex', 'sterilized_intake',
+                          'sterilized_outcome', 'outcome_age_(days)', 'intake_datetime', 'found_location',
+                          'intake_type', 'intake_condition', 'intake_age_(days)', 
+                          'cfa_breed', 'domestic_breed', 'coat_pattern', 'has_name']]
 
     target = cat_df['adopted_or_not'].astype(str).astype(float)
     top_breeds_encoded = encode_feature(features_df, 'top_breeds')
