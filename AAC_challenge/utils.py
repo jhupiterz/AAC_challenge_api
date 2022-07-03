@@ -28,3 +28,10 @@ def map_top_breeds(x):
     if (x == 'domestic shorthair') | (x == 'domestic mediumhair') | (x == 'domestic longhair') | (x == 'siamese') | (x == 'american shorthair'):
         return x
     return 'other'
+
+def map_top_coats(x):
+    top_coats = ['black', 'brown', 'blue', 'orange', 'white', 'tortie', 'calico',
+                 'torbie', 'cream', 'lynx', 'gray', 'seal', 'flame', 'silver']
+    if x in top_coats:
+        return x
+    return 'other'
