@@ -35,3 +35,13 @@ def map_top_coats(x):
     if x in top_coats:
         return x
     return 'other'
+
+def get_n_days(x):
+    if 'year' in x:
+        return 365
+    elif 'month' in x:
+        return 30
+    elif 'week' in x:
+        return 7
+    elif 'day' in x:
+        return 1

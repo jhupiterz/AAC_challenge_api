@@ -74,6 +74,12 @@ def clean_intake_dataset(intake_df, animal_type):
                            'Intake Condition': 'intake_condition', 'Sex upon Intake': 'sex_upon_intake',
                            'Age upon Intake': 'age_upon_intake', 'Breed': 'breed', 'Color': 'color'}, inplace=True)
     intake_df.drop(columns='name', inplace = True)
+    # get intake_age_days
+    intake_df['n_age'] = [int(x.split()[0]) for x in intake_df.age_upon_intake]
+    intake_df['month_week_year'] = [x.split()[1] for x in intake_df.age_upon_intake]
+    intake_df['month_week_year'] = intake_df['month_week_year'].apply(utils.get_n_days)
+    intake_df['intake_age_days'] = intake_df['n_age'] * intake_df['month_week_year']
+    intake_df.drop(columns=['age_upon_intake', 'n_age', 'month_week_year'], inplace=True)
     # split sex_upon_intake
     intake_df.sex_upon_intake = intake_df.sex_upon_intake.replace('Unknown', 'Unknown Unknown')
     intake_df['sterilized_intake'] = [x.split()[0] for x in intake_df.sex_upon_intake]
