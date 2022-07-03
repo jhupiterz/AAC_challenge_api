@@ -1,6 +1,9 @@
 import pandas as pd
 from AAC_challenge import utils
 
+from sklearn.preprocessing import OneHotEncoder
+
+
 def load_csv(dataset):
     if dataset == 'cats':
         cat_df = pd.read_csv("../raw_data/aac_data/aac_shelter_cat_outcome_eng.csv")
@@ -12,7 +15,7 @@ def load_csv(dataset):
 def clean_cat_dataset(cat_df):
     # drop some columns
     cat_df.drop(columns=['count', 'breed2', 'color2', 'monthyear', 'sex_upon_outcome',
-                         'age_upon_outcome', 'Cat/Kitten (outcome)', 'sex_age_outcome',
+                         'age_upon_outcome', 'sex_age_outcome',
                          'age_group', 'dob_year', 'dob_month', 'dob_monthyear', 'breed1',
                          'outcome_hour'], inplace = True)
     # replace double brown coat
@@ -22,13 +25,18 @@ def clean_cat_dataset(cat_df):
     cat_df.drop(index=rows_to_drop, inplace = True)
     # drop duplicates
     cat_df = cat_df.drop_duplicates(inplace=False).reset_index()
-    # map yes/no to 0 1
+    # map cat/kitten to kitten (1 yes or no 0)
+    cat_df['Cat/Kitten (outcome)'] = cat_df['Cat/Kitten (outcome)'].apply(lambda x: 0 if (x == 'Cat') else 1)
+    # map binary features to 0 1
     cat_df.cfa_breed = cat_df.cfa_breed.apply(lambda x: 0 if (x == False) else 1)
     cat_df.domestic_breed = cat_df.domestic_breed.apply(lambda x: 0 if (x == False) else 1)
     cat_df['Spay/Neuter'] = cat_df['Spay/Neuter'].apply(lambda x: 0 if (x == 'No') else 1)
+    cat_df.sex = cat_df.sex.apply(lambda x: 0 if (x == 'Male') else 1)
     # get has_name column then drop name column
     cat_df['has_name'] = utils.get_has_name(cat_df)
     cat_df.drop(columns='name', inplace = True)
+    # get top_breeds
+    cat_df['top_breeds'] = cat_df.breed.apply(utils.map_top_breeds)
     # get adopted or not
     cat_df['adopted_or_not'] = cat_df.outcome_type.apply(utils.get_adopted_or_not)
     cat_df.drop(columns='outcome_subtype', inplace = True)
@@ -40,11 +48,39 @@ def clean_cat_dataset(cat_df):
     cat_df['datetime'] = pd.to_datetime(cat_df['datetime']).dt.date
     cat_df['outcome_year_month'] = pd.to_datetime(cat_df['outcome_year'].astype(str) + '-' + cat_df['outcome_month'].astype(str))
     # rename columns
-    cat_df.rename(columns={'datetime': 'outcome_datetime', 'Spay/Neuter': 'sterilized', 'Periods': 'periods',
-                       'Period Range': 'period_range', 'color1': 'main_color'}, inplace=True)
+    cat_df.rename(columns={'datetime': 'outcome_datetime', 'Cat/Kitten (outcome)': 'kitten',
+                           'Spay/Neuter': 'sterilized', 'Periods': 'periods',
+                           'Period Range': 'period_range', 'color1': 'main_color'}, inplace=True)
+    cat_df.kitten = cat_df.kitten.astype(str).astype(int)
+    cat_df.sterilized = cat_df.sterilized.astype(str).astype(int)
+    cat_df.cfa_breed = cat_df.cfa_breed.astype(str).astype(int)
+    cat_df.domestic_breed = cat_df.domestic_breed.astype(str).astype(int)
+    cat_df.has_name = cat_df.has_name.astype(str).astype(int)
+    cat_df.adopted_or_not = cat_df.adopted_or_not.astype(str).astype(int)
+    cat_df.sex = cat_df.sex.astype(str).astype(int)
     return cat_df
 
 def get_clean_cat_dataset(dataset):
     cat_df = load_csv(dataset)
     cat_df = clean_cat_dataset(cat_df)
     return cat_df
+
+def get_X_y():
+    cat_df = get_clean_cat_dataset('cats')
+    features_df = cat_df[['top_breeds', 'kitten', 'sex', 'sterilized',
+                      'cfa_breed', 'domestic_breed', 'coat_pattern',
+                     'coat', 'has_name']]
+
+    target = cat_df['adopted_or_not'].astype(str).astype(float)
+    top_breeds_encoded = encode_feature(features_df, 'top_breeds')
+    coat_pattern_encoded = encode_feature(features_df, 'coat_pattern')
+    coat_encoded = encode_feature(features_df, 'coat')
+    features_df = pd.concat([features_df, top_breeds_encoded, coat_pattern_encoded, coat_encoded], axis=1)
+    features_df.drop(columns=['top_breeds', 'coat_pattern', 'coat'], inplace = True)
+    return features_df, target
+
+def encode_feature(df, feature_name):
+    enc = OneHotEncoder(sparse = False)
+    enc.fit(df[[feature_name]])
+    feature_encoded = pd.DataFrame(enc.transform(df[[feature_name]]), columns=enc.get_feature_names())
+    return feature_encoded
