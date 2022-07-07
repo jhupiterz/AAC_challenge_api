@@ -153,8 +153,9 @@
 
  /* Graphs */
  .timeseries-plot {
+  order: 1;
   width: 45vw;
-  height: 50vh;
+  height: 35vh;
   background-color: white;
   border-radius: 5px;
   margin-left: 2.5vw;

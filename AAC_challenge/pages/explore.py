@@ -35,4 +35,4 @@ def render_tab_content(tab_value, data):
         df = pd.DataFrame(data)
         return html.Div(children = [
             dcc.Graph(figure = plots.get_outcome_timeseries(df), className = 'timeseries-plot'),
-            plots.get_mapbox(df)])
+            plots.get_mapbox(df)], style = {'display': 'flex', 'flex-direction': 'row', 'align-times': 'center'})

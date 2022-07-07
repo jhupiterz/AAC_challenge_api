@@ -69,10 +69,10 @@ def get_mapbox(df):
     return dcc.Graph(figure = {
         'data': locations,
         'layout': go.Layout(
-            width = 500,
-            height = 500,
+            width = 800,
+            height = 600,
             hovermode='closest',
-            title=dict(text="Where are cats found?",font=dict(size=20, color='black')),
+            margin = dict(l = 0, r = 0, t = 0, b = 0),
             mapbox=dict(
                 accesstoken= MAPBOX_TOKEN,
                 bearing=0,
@@ -85,4 +85,4 @@ def get_mapbox(df):
                 zoom=10
             ),
         )
-    })
+    }, style = {'order': '2', 'margin-left': '5vw'})
