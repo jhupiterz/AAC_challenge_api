@@ -4,10 +4,12 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
-from sklearn import utils
+import dash_bootstrap_components as dbc
+from AAC_challenge import utils
 
 app = dash.Dash(
     __name__, suppress_callback_exceptions = True,
+    use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1", 'charSet':'“UTF-8”'}])
 
 app.title = "AAC Dashboard"
@@ -31,23 +33,15 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     [
-                        html.A(
-                            "Explore", 
-                            href="https://jhupiterz.notion.site/The-Biosignature-Database-f48effd1004f4155acfd76deee382436",
-                            target='_blank', 
-                            className="doc-link"
-                        ),
-                        html.A(
-                            "Predict",
-                            href="https://github.com/jhupiterz/biosignatureDB",
-                            target='_blank',
-                            className="doc-link"
-                        ),
-                        html.A(
-                            "Documentation",
-                            href="https://github.com/Joannaakl27/AAC_challenge",
-                            target='_blank',
-                            className="doc-link"
+                        dbc.DropdownMenu(
+                            [
+                                dbc.DropdownMenuItem("Explore", href = "/pages/explore"),
+                                dbc.DropdownMenuItem("Predict", href = '/pages/predict'),
+                                dbc.DropdownMenuItem("Documentation", href = '/pages/docs')
+                            ],
+                            label="MENU",
+                            size = 'lg',
+                            className="mb-3"
                         )
                     
                     ],
@@ -60,7 +54,9 @@ app.layout = html.Div(
         dcc.Store(id='store-data', data = utils.read_json_data('../raw_data/merged_with_locations.json'), storage_type = 'memory'),
 
         # Main content ----------------------------------------------------------
-        html.Div([])
+        html.Div([]),
+
+        dash.page_container
     ]
 )
 
