@@ -4,10 +4,8 @@ from dash import html, dcc
 dash.register_page(__name__)
 
 layout = html.Div(children=[
-    html.H1(children='This is our predict page'),
+    html.H1(children='This is our dashboard page', style = {'color': 'black'}),
 
-    html.Div(children='''
-        This is our predict page content.
-    '''),
+    html.P(children='This is our dashboard page content.', style = {'color': 'black'}),
 
 ])

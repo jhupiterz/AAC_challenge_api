@@ -35,9 +35,9 @@ app.layout = html.Div(
                     [
                         dbc.DropdownMenu(
                             [
-                                dbc.DropdownMenuItem("Explore", href = "/pages/explore"),
-                                dbc.DropdownMenuItem("Predict", href = '/pages/predict'),
-                                dbc.DropdownMenuItem("Documentation", href = '/pages/docs')
+                                dbc.DropdownMenuItem("Explore", href = "/explore"),
+                                dbc.DropdownMenuItem("Predict", href = '/predict'),
+                                dbc.DropdownMenuItem("Documentation", href = '/docs')
                             ],
                             label="MENU",
                             size = 'lg',
@@ -50,8 +50,6 @@ app.layout = html.Div(
             ],
             className="banner",
         ),
-        
-        dcc.Store(id='store-data', data = utils.read_json_data('../raw_data/merged_with_locations.json'), storage_type = 'memory'),
 
         # Main content ----------------------------------------------------------
         html.Div([]),
