@@ -4,7 +4,7 @@ from AAC_challenge import utils
 
 from sklearn.preprocessing import OneHotEncoder
 
-API_KEY = 'AIzaSyAlMEeKxUuR3RrfA61q3fV1NVh3t7RFHx0'
+API_KEY = ''
 
 def load_csv(dataset):
     """params: 
