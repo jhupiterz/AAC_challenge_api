@@ -45,3 +45,9 @@ def get_n_days(x):
         return 7
     elif 'day' in x:
         return 1
+
+def format_address(address):
+    address = [x.replace(' in ', ' ') for x in address]
+    address = [x.replace('(', '') for x in address]
+    address = [x.replace(')', '') for x in address]
+    return address

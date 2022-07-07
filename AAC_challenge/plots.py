@@ -13,7 +13,7 @@ def get_outcome_age_histogram(df, adoptions_only=False):
     return fig
 
 def get_outcome_sterilized_histogram(df):
-    fig = px.histogram(df, x='outcome_type', color = 'sex', pattern_shape="sterilized")
+    fig = px.histogram(df, x='outcome_type', color = 'sex', pattern_shape="sterilized_outcome")
     return fig
 
 def get_outcome_weekday_histogram(df):
@@ -39,6 +39,6 @@ def get_top_breeds_pie(df, adoptions_only = False):
         title = 'Adoptions only'
     else:
         title = 'All outcomes'
-    df['top_breeds'] = df.breed.apply(utils.map_top_breeds)
+    #df['top_breeds'] = df.breed.apply(utils.map_top_breeds)
     fig = px.pie(df.groupby('top_breeds', as_index=False).count().sort_values('sex', ascending=False), values='sex', names='top_breeds', title=title)
     return fig

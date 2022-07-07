@@ -1,10 +1,17 @@
 import pandas as pd
+import requests
 from AAC_challenge import utils
 
 from sklearn.preprocessing import OneHotEncoder
 
+API_KEY = 'AIzaSyAlMEeKxUuR3RrfA61q3fV1NVh3t7RFHx0'
 
 def load_csv(dataset):
+    """params: 
+       'cats' to load cat outcomes dataset
+       'all' to load entire outcomes dataset
+       'intakes' to load entire intakes dataset
+       'merged_with_locations' to load merged outcomes and intakes with lat and long"""
     if dataset == 'cats':
         cat_df = pd.read_csv("../raw_data/aac_data/aac_shelter_cat_outcome_eng.csv")
         return cat_df
@@ -14,6 +21,9 @@ def load_csv(dataset):
     elif dataset == 'intakes':
         intake_df = pd.read_csv("../raw_data/aac_data/intakes.csv")
         return intake_df
+    elif dataset == 'merged_with_locations':
+        merged_df = pd.read_csv('../raw_data/merged_with_locations.csv')
+        return merged_df
 
 def clean_cat_dataset(cat_df):
     # drop some columns
@@ -106,19 +116,21 @@ def merge_intakes_outcomes():
     merged_df = outcomes.merge(intakes, how='left', on='animal_id')
     merged_df.dropna(inplace=True)
     merged_df['days_spent_at_shelter'] = (merged_df['outcome_datetime'] - merged_df['intake_datetime']).dt.days
-    merged_df['age_diff_days'] = merged_df['outcome_age_(days)'] - merged_df.intake_age_days
-    for index, row in merged_df.iterrows():
-        if row.days_spent_at_shelter < 0:
-            copy = row['outcome_datetime']
-            row['outcome_datetime'] = row['intake_datetime']
-            row['intake_datetime'] = copy
-        elif row.age_diff_days < 0:
-            copy_ = row['outcome_age_(days)']
-            row['outcome_age_(days)'] = row.intake_age_days
-            row.intake_age_days = copy
-    merged_df['days_spent_at_shelter'] = (merged_df['outcome_datetime'] - merged_df['intake_datetime']).dt.days
-    merged_df['age_diff_days'] = merged_df['outcome_age_(days)'] - merged_df.intake_age_days
+    merged_df['age_diff_days'] = (merged_df['outcome_age_(days)'] - merged_df['intake_age_days'])
+    merged_df = merged_df[merged_df['days_spent_at_shelter'] >= 0]
+    merged_df.drop(columns=['coat', 'color', 'breed', 'main_color'], inplace=True)
+    merged_df['found_location'] = utils.format_address(merged_df['found_location'])
     return merged_df
+
+def get_lat_lon_from_address(address):
+    url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={API_KEY}'
+    response = requests.get(url)
+    location = response.json()
+    if location['status'] == 'OK':
+        lat, lon = location['results'][0]['geometry']['location']['lat'], location['results'][0]['geometry']['location']['lng']
+    else:
+        lat, lon = 0, 0
+    return lat, lon
 
 def get_X_y():
     cat_df = merge_intakes_outcomes()
