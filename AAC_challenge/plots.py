@@ -30,6 +30,9 @@ def get_outcome_sterilized_histogram(df):
 
 def get_outcome_weekday_histogram(df):
     fig = px.histogram(df, x='outcome_weekday', color = 'outcome_type')
+    # fig.update_yaxes(title = '', visible=False, showticklabels=False)
+    # fig.update_xaxes(title = '', visible=False, showticklabels=False)
+    # fig.update_layout(showlegend=False, width = 700, height = 600)
     return fig
 
 def get_has_name_histogram(df):

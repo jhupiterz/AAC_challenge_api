@@ -24,8 +24,7 @@ app.layout = html.Div(
                         html.Img(
                             src="/assets/aac.jpeg",
                             alt="AAC"
-                        ),
-                        html.H3("AAC Dashboard")
+                        )
                     ],
                     href="https://www.austintexas.gov/austin-animal-center",
                     target='_blank',

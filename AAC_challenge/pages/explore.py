@@ -34,5 +34,8 @@ def render_tab_content(tab_value, data):
     if tab_value == 'cats':
         df = pd.DataFrame(data)
         return html.Div(children = [
-            dcc.Graph(figure = plots.get_outcome_timeseries(df), className = 'timeseries-plot'),
+                html.Div([
+                        dcc.Graph(figure = plots.get_outcome_timeseries(df), className = 'timeseries-plot'),
+                        dcc.Graph(figure = plots.get_has_name_histogram(df), className = 'hasname-plot')], style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'}),
             plots.get_mapbox(df)], style = {'display': 'flex', 'flex-direction': 'row', 'align-times': 'center'})
+            
