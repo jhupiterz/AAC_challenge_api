@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import json
 from sklearn.impute import SimpleImputer
 
 def impute_most_frequent(df):
@@ -45,3 +46,15 @@ def get_n_days(x):
         return 7
     elif 'day' in x:
         return 1
+
+def format_address(address):
+    address = [x.replace(' in ', ' ') for x in address]
+    address = [x.replace('(', '') for x in address]
+    address = [x.replace(')', '') for x in address]
+    return address
+
+def read_json_data(json_file):
+    with open(json_file, 'r') as myfile:
+        data=myfile.read()
+    research = json.loads(data)
+    return research

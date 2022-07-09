@@ -1,10 +1,17 @@
 import pandas as pd
+import requests
 from AAC_challenge import utils
 
 from sklearn.preprocessing import OneHotEncoder
 
+API_KEY = ''
 
 def load_csv(dataset):
+    """params: 
+       'cats' to load cat outcomes dataset
+       'all' to load entire outcomes dataset
+       'intakes' to load entire intakes dataset
+       'merged_with_locations' to load merged outcomes and intakes with lat and long"""
     if dataset == 'cats':
         cat_df = pd.read_csv("../raw_data/aac_data/aac_shelter_cat_outcome_eng.csv")
         return cat_df
@@ -14,6 +21,9 @@ def load_csv(dataset):
     elif dataset == 'intakes':
         intake_df = pd.read_csv("../raw_data/aac_data/intakes.csv")
         return intake_df
+    elif dataset == 'merged_with_locations':
+        merged_df = pd.read_csv('../raw_data/merged_with_locations.csv')
+        return merged_df
 
 def clean_cat_dataset(cat_df):
     # drop some columns
@@ -49,7 +59,7 @@ def clean_cat_dataset(cat_df):
     cat_df.drop(columns=['index', 'animal_type'], inplace = True)
     # handle datetime columns
     cat_df['date_of_birth'] = pd.to_datetime(cat_df['date_of_birth'])
-    cat_df['datetime'] = pd.to_datetime(cat_df['datetime']).dt.date
+    cat_df['datetime'] = pd.to_datetime(pd.to_datetime(cat_df['datetime']).dt.date)
     cat_df['outcome_year_month'] = pd.to_datetime(cat_df['outcome_year'].astype(str) + '-' + cat_df['outcome_month'].astype(str))
     # rename columns
     cat_df.rename(columns={'datetime': 'outcome_datetime', 'Cat/Kitten (outcome)': 'kitten_outcome',
@@ -80,6 +90,8 @@ def clean_intake_dataset(intake_df, animal_type):
     intake_df['month_week_year'] = intake_df['month_week_year'].apply(utils.get_n_days)
     intake_df['intake_age_days'] = intake_df['n_age'] * intake_df['month_week_year']
     intake_df.drop(columns=['age_upon_intake', 'n_age', 'month_week_year'], inplace=True)
+    # handle intake_datetime
+    intake_df['intake_datetime'] = pd.to_datetime(pd.to_datetime(intake_df['intake_datetime']).dt.date)
     # split sex_upon_intake
     intake_df.sex_upon_intake = intake_df.sex_upon_intake.replace('Unknown', 'Unknown Unknown')
     intake_df['sterilized_intake'] = [x.split()[0] for x in intake_df.sex_upon_intake]
@@ -103,12 +115,29 @@ def merge_intakes_outcomes():
     intakes = get_clean_intake_dataset('intakes', 'cats')
     merged_df = outcomes.merge(intakes, how='left', on='animal_id')
     merged_df.dropna(inplace=True)
+    merged_df['days_spent_at_shelter'] = (merged_df['outcome_datetime'] - merged_df['intake_datetime']).dt.days
+    merged_df['age_diff_days'] = (merged_df['outcome_age_(days)'] - merged_df['intake_age_days'])
+    merged_df = merged_df[merged_df['days_spent_at_shelter'] >= 0]
+    merged_df.drop(columns=['coat', 'color', 'breed', 'main_color'], inplace=True)
+    merged_df['found_location'] = utils.format_address(merged_df['found_location'])
     return merged_df
 
+def get_lat_lon_from_address(address):
+    url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={API_KEY}'
+    response = requests.get(url)
+    location = response.json()
+    if location['status'] == 'OK':
+        lat, lon = location['results'][0]['geometry']['location']['lat'], location['results'][0]['geometry']['location']['lng']
+    else:
+        lat, lon = 0, 0
+    return lat, lon
+
 def get_X_y():
-    cat_df = get_clean_cat_dataset('cats')
-    features_df = cat_df[['top_breeds', 'top_coats', 'kitten', 'sex', 'sterilized',
-                      'cfa_breed', 'domestic_breed', 'coat_pattern', 'has_name']]
+    cat_df = merge_intakes_outcomes()
+    features_df = cat_df[['top_breeds', 'top_coats', 'kitten_outcome', 'sex', 'sterilized_intake',
+                          'sterilized_outcome', 'outcome_age_(days)', 'intake_datetime', 'found_location',
+                          'intake_type', 'intake_condition', 'intake_age_(days)', 
+                          'cfa_breed', 'domestic_breed', 'coat_pattern', 'has_name']]
 
     target = cat_df['adopted_or_not'].astype(str).astype(float)
     top_breeds_encoded = encode_feature(features_df, 'top_breeds')
