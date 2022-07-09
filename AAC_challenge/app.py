@@ -35,6 +35,7 @@ app.layout = html.Div(
                     [
                         dbc.DropdownMenu(
                             [
+                                dbc.DropdownMenuItem("Home", href = "/"),
                                 dbc.DropdownMenuItem("Explore", href = "/explore"),
                                 dbc.DropdownMenuItem("Predict", href = '/predict'),
                                 dbc.DropdownMenuItem("Documentation", href = '/docs')
