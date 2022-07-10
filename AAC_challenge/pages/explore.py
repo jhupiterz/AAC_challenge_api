@@ -36,6 +36,11 @@ def render_tab_content(tab_value, data):
         return html.Div(children = [
                 html.Div([
                         dcc.Graph(figure = plots.get_outcome_timeseries(df), className = 'timeseries-plot'),
-                        dcc.Graph(figure = plots.get_has_name_histogram(df), className = 'hasname-plot')], style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'}),
-            plots.get_mapbox(df)], style = {'display': 'flex', 'flex-direction': 'row', 'align-times': 'center'})
+                        dcc.Graph(figure = plots.get_has_name_histogram(df), className = 'hasname-plot'),
+                        dcc.Graph(figure = plots.get_outcome_weekday_histogram(df), className = 'weekday-plot')], style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'}),
+                html.Div([
+                        plots.get_mapbox(df),
+                        dcc.Graph(figure = plots.get_outcome_sterilized_histogram(df), className = 'sterilized-plot')], style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'})],
+                        
+                        style = {'display': 'flex', 'flex-direction': 'row', 'align-times': 'center'})
             
