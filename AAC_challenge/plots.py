@@ -50,7 +50,8 @@ def get_outcome_timeseries(df):
 
 def get_top_breeds_pie(df, adoptions_only = False):
     if adoptions_only==True:
-        df = df[df['outcome_type'] == 'Adoption']
+        df = df[df['outcome_type']
+                == 'Adoption']
         title = 'Adoptions only'
     else:
         title = 'All outcomes'
@@ -68,12 +69,12 @@ def get_mapbox(df):
                 opacity=0.2
             )
         )]
-    
+
     return dcc.Graph(figure = {
         'data': locations,
         'layout': go.Layout(
-            width = 800,
-            height = 600,
+            width = 525,
+            height = 495,
             hovermode='closest',
             margin = dict(l = 0, r = 0, t = 0, b = 0),
             mapbox=dict(
