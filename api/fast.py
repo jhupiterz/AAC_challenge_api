@@ -21,8 +21,8 @@ def index():
 @app.get("/predict")
 def predict(sex, coat_pattern, has_name, breed, coat, intake_type, intake_condition,
             intake_age_days, sterilized_intake, days_spent_at_shelter, lat, lon):
-    intake_age_days = int(intake_age_days)
-    days_spent_at_shelter = int(days_spent_at_shelter)
+    intake_age_days = int(float(intake_age_days))
+    days_spent_at_shelter = int(float(days_spent_at_shelter))
     lat = float(lat)
     lon = float(lon)
     # encode male/female
@@ -73,6 +73,7 @@ def predict(sex, coat_pattern, has_name, breed, coat, intake_type, intake_condit
     X['lat'] = [lat]
     X['lon'] = [lon]
     X = pd.concat([X, breed_df, coat_pattern_df, coat_df, intake_type_df, intake_condition_df], axis = 1)
+    X.drop(columns=['None'], inplace = True)
 
     loaded_model = pickle.load(open('gbc_model.sav', 'rb'))
     pred = int(loaded_model.predict(X)[0])

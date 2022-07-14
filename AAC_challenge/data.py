@@ -152,3 +152,6 @@ def encode_feature(df, feature_name):
     enc.fit(df[[feature_name]])
     feature_encoded = pd.DataFrame(enc.transform(df[[feature_name]]), columns=enc.get_feature_names())
     return feature_encoded
+
+def get_prediction_outcome():
+    pass
