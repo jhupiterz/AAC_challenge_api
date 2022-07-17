@@ -41,5 +41,30 @@ def render_tab_content(tab_value, data):
                 html.Div([
                         dcc.Graph(figure = plots.get_outcome_timeseries(df), className = 'timeseries-plot'),
                         dcc.Graph(figure = plots.get_has_name_histogram(df), className = 'hasname-plot')], style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'}),
+                
+                html.Div([
+                    html.Div([
+                        html.Div([
+                            html.Label('Intake type', style={'font-weight': 'bold'}),
+                            dcc.Dropdown(id = 'map-dp1', value = 'All', options = ['All', 'Stray', 'Owner Surrender', 'Public Assist', 'Euthanasia Request'], placeholder = 'Intake type',  style = {'order': '1', 'width': '12vw', 'margin-right': '4vw'})]),
+                        html.Div([   
+                            html.Label('Intake condition', style={'font-weight': 'bold'}),
+                            dcc.Dropdown(id = 'map-dp2', value = 'All', options = ['All', 'Nursing', 'Normal', 'Sick', 'Injured', 'Feral', 'Pregnant', 'Other', 'Aged'], placeholder = 'Intake condition',  style = {'order': '2', 'width': '12vw'})])], style = {'order': '1', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '1vh', 'justify-content': 'space-around'}),
+                    html.Div(id = 'mapbox', children = [], style = {'order': '2'})], style = {'order': '2', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'margin-left': '5vw'})],
+            style = {'display': 'flex', 'flex-direction': 'row', 'align-items': 'center','width':'50%'})
 
-            plots.get_mapbox(df)], style = {'display': 'flex', 'flex-direction': 'row', 'align-times': 'center','width':'50%' })
+@callback(Output('mapbox', 'children'),
+          Input('store-data', 'data'),
+          Input('map-dp1', 'value'),
+          Input('map-dp2', 'value'))
+def update_mapbox(data, value1, value2):
+    df = pd.DataFrame(data)
+    if (value1 == 'All') & (value2 == 'All'):
+        df = df
+    elif (value1 != 'All') & (value2 == 'All'):
+        df = df[df['intake_type'] == value1]
+    elif (value1 == 'All') & (value2 != 'All'):
+        df = df[df['intake_condition'] == value2]
+    else:
+        df = df[(df['intake_condition'] == value2) & (df['intake_type'] == value1)]
+    return plots.get_mapbox(df)
