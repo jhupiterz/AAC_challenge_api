@@ -50,7 +50,7 @@ def render_tab_content(tab_value, data):
                         html.Div([   
                             html.Label('Intake condition', style={'font-weight': 'bold'}),
                             dcc.Dropdown(id = 'map-dp2', value = 'All', options = ['All', 'Nursing', 'Normal', 'Sick', 'Injured', 'Feral', 'Pregnant', 'Other', 'Aged'], placeholder = 'Intake condition',  style = {'order': '2', 'width': '12vw'})])], style = {'order': '1', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '1vh', 'justify-content': 'space-around'}),
-                    html.Div(id = 'mapbox', children = [], style = {'order': '2'})], style = {'order': '2', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'margin-left': '5vw'})],
+                    html.Div(id = 'mapbox', children = [], style = {'order': '2', 'width': '50vw'})], style = {'order': '2', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'margin-left': '5vw'})],
             style = {'display': 'flex', 'flex-direction': 'row', 'align-items': 'center','width':'50%'})
 
 @callback(Output('mapbox', 'children'),
@@ -67,4 +67,4 @@ def update_mapbox(data, value1, value2):
         df = df[df['intake_condition'] == value2]
     else:
         df = df[(df['intake_condition'] == value2) & (df['intake_type'] == value1)]
-    return plots.get_mapbox(df)
+    return dcc.Graph(id = 'map-plot', figure = plots.get_map_box(df), style = {'order': '2'})
