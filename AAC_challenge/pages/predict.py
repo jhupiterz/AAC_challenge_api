@@ -1,5 +1,5 @@
 import dash
-from AAC_challenge import plots
+from AAC_challenge import plots, data
 import requests
 from dash import html, dcc, callback
 from dash.dependencies import Input, Output
@@ -35,49 +35,44 @@ def render_tab_content(tab_value):
 
                         html.Div([
 
-                            html.H3('Parameters', style = {'order':'1', 'text-align': 'left', 'margin-bottom': '3vh'}),
-
-                            html.Div([
-
-                                html.Div([ 
-                                    html.Label('Sex', style={'font-weight': 'bold'}),
-                                    dbc.RadioItems(id = 'sex', options = [dict(label = 'male', value = 'male'),
-                                                                         dict(label = 'female', value = 'female')], 
-                                                                        style = {'order': '1', 'margin-right': '2vw'})]),
+                            html.H3('Parameters', style = {'order':'1', 'text-align': 'left', 'margin-bottom': '3vh', 'font-family': 'Arial, sans serif'}),
                                 
                                 html.Div([
-                                    html.Label('Has a name', style={'font-weight': 'bold'}),
-                                    dbc.RadioItems(id = 'has-name', options = [dict(label = 'yes', value = 'yes'),
-                                                                    dict(label = 'no', value = 'no')], 
-                                                                    style = {'order': '2', 'margin-right': '2vw', 'width': '8vw'})]),
-                                
-                                html.Div([
-                                    html.Label('Intake age (days)', style={'font-weight': 'bold'}),
-                                    dcc.Input(id="intake-age-days", placeholder="Intake age (days)", value=0, type="number", disabled = False, debounce = True, min=0, max=10000, step=1, style = {'order': '3', 'width': '8vw', 'margin-right': '2vw'})]),
-
-                                html.Div([
-                                    html.Label('Sterilized', style={'font-weight': 'bold'}),
-                                    dbc.RadioItems(id = 'sterilized', options = [dict(label = 'yes', value = 'yes'),
-                                                                      dict(label = 'no', value = 'no')], 
-                                                                      style = {'order': '4', 'margin-right': '4vw'})]),
-                                
-                                html.Div([
-                                    html.Label('Days spent at shelter', style={'font-weight': 'bold'}),
-                                    dcc.Input(id="days-spent", placeholder="Days spent at shelter", value=0, type="number", disabled = False, debounce = True, min=0, max=10000, step=1, style = {'order': '5', 'width': '11vw', 'margin-right': '2vw'})]),
+                                    html.Div([ 
+                                        html.Label('Sex', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
+                                        dbc.RadioItems(id = 'sex', options = [dict(label = 'male', value = 'male'),
+                                                                            dict(label = 'female', value = 'female')], 
+                                                                            style = {'order': '1', 'margin-right': '2vw'})]),
                                     
-                                html.Div([  
-                                    html.Label('Found location (latitude)', style={'font-weight': 'bold'}),  
-                                    dcc.Input(id="lat", placeholder="Found location (latitude)", value=0, type="number", min = -360, max = 360, disabled = False, debounce = True, step=0.000001, style = {'order': '6', 'width': '14vw', 'margin-right': '2vw'})]),
+                                    html.Div([
+                                        html.Label('Has a name', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
+                                        dbc.RadioItems(id = 'has-name', options = [dict(label = 'yes', value = 'yes'),
+                                                                        dict(label = 'no', value = 'no')], 
+                                                                        style = {'order': '2', 'margin-right': '2vw', 'width': '8vw'})]),
                                     
-                                html.Div([   
-                                    html.Label('Found location (longitude)', style={'font-weight': 'bold'}), 
-                                    dcc.Input(id="lon", placeholder="Found location (longitude)", value=0, type="number", min = -360, max = 360, disabled = False, debounce = True, step=0.000001, style = {'order': '7', 'width': '14vw', 'margin-right': '2vw'})])],
-                                    style = {'order':'2', 'display': 'flex', 'flex-direction': 'row', 'width': '95vw', 'height': '4vh', 'margin':'auto', 'margin-bottom': '6vh'}),
+                                    html.Div([
+                                        html.Label('Sterilized', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
+                                        dbc.RadioItems(id = 'sterilized', options = [dict(label = 'yes', value = 'yes'),
+                                                                        dict(label = 'no', value = 'no')], 
+                                                                        style = {'order': '3', 'margin-right': '4vw'})]),
+
+                                    html.Div([
+                                        html.Label('Intake age (days)', style={'font-weight': 'bold', 'order': '1', 'font-family': 'Arial, sans serif'}),
+                                        dcc.Input(id="intake-age-days", placeholder="Intake age (days)", value=0, type="number", disabled = False, debounce = True, min=0, max=10000, step=1, style = {'order':'2', 'width': '8vw', 'margin-right': '2vw'})], style = {'order': '4', 'display': 'flex', 'flex-direction': 'column'})],
+                                        style = {'order': '1', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '5vh'}),
                             
                             html.Div([
 
                                 html.Div([
-                                    html.Label('Breed', style={'font-weight': 'bold'}),
+                                    html.Label('Days spent at shelter', style={'font-weight': 'bold', 'order': '1', 'font-family': 'Arial, sans serif'}),
+                                    dcc.Input(id="days-spent", placeholder="Days spent at shelter", value=0, type="number", disabled = False, debounce = True, min=0, max=10000, step=1, style = {'order': '2', 'width': '11vw', 'margin-right': '2vw'})], style = {'order': '1', 'display': 'flex', 'flex-direction': 'column'}),
+                                    
+                                html.Div([  
+                                    html.Label('Found location', style={'font-weight': 'bold', 'order': '1', 'font-family': 'Arial, sans serif'}),  
+                                    dcc.Input(id="address", placeholder="Address", value='Austin, TX', type="text", min = -360, max = 360, disabled = False, debounce = True, style = {'order': '2', 'width': '18vw', 'margin-right': '2vw'})], style = {'order': '2', 'display': 'flex', 'flex-direction': 'column'}),
+                                
+                                html.Div([
+                                    html.Label('Breed', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
                                     dcc.Dropdown(
                                         id = 'breed',
                                         clearable = False,
@@ -91,11 +86,14 @@ def render_tab_content(tab_value):
                                             "other",
                                             "siamese"
                                         ],
-                                        style = {'order': '1', 'width': '11vw', 'margin-right': '2vw'}
-                                    )]),
+                                        style = {'order': '1', 'width': '14vw', 'margin-right': '2vw'}
+                                    )])],
+                                    style = {'order':'2', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '5vh'}),
+                            
+                            html.Div([
 
                                 html.Div([
-                                    html.Label('Coat pattern', style={'font-weight': 'bold'}),
+                                    html.Label('Coat pattern', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
                                     dcc.Dropdown(
                                         id = 'coat-pattern',
                                         placeholder="Coat pattern",
@@ -116,7 +114,7 @@ def render_tab_content(tab_value):
                                     )]),
 
                                 html.Div([
-                                    html.Label('Coat', style={'font-weight': 'bold'}),
+                                    html.Label('Coat', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
                                     dcc.Dropdown(
                                         id = 'coat',
                                         placeholder="Coat",
@@ -143,7 +141,7 @@ def render_tab_content(tab_value):
                                     )]),
                                     
                                 html.Div([
-                                    html.Label('Intake type', style={'font-weight': 'bold'}),
+                                    html.Label('Intake type', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
                                     dcc.Dropdown(
                                         id = 'intake-type',
                                         placeholder="Intake type",
@@ -155,11 +153,11 @@ def render_tab_content(tab_value):
                                             "public assist",
                                             "stray"
                                         ],
-                                        style = {'order': '4', 'width': '10vw', 'margin-right': '2vw'}
+                                        style = {'order': '4', 'width': '12vw', 'margin-right': '2vw'}
                                     )]),
                                     
                                 html.Div([
-                                    html.Label('Intake condition', style={'font-weight': 'bold'}),
+                                    html.Label('Intake condition', style={'font-weight': 'bold', 'font-family': 'Arial, sans serif'}),
                                     dcc.Dropdown(
                                         id = 'intake-condition',
                                         clearable = False,
@@ -176,17 +174,13 @@ def render_tab_content(tab_value):
                                             "sick"
                                         ],
                                         style = {'order': '5', 'width': '9vw', 'margin-right': '2vw'}
-                                    )])], style = {'order':'3', 'display': 'flex', 'flex-direction': 'row', 'width': '95vw', 'margin':'auto', 'margin-bottom': '3vh'}),
+                                    )])], style = {'order':'3', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '5vh'}),
                                     
                                     dbc.Button(
-                                            "Predict", id="button", className="me-2", n_clicks=0, style = {'order': '4'}
-                                        ),
+                                            "Predict", id="button", className="me-2", n_clicks=0, style = {'order': '4', 'font-size': '20px'}
+                                        )], style = {'order':'1', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'flex-start', 'width':'60%', 'margin': 'auto'}),
                                 
-                                html.H3(id = 'prediction', style = {'order': '5', 'margin-top': '4vh'})],
-
-                                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'flex-start', 'width':'95%', 'margin': 'auto'}),
-                            
-                            ])
+                                html.Div([html.H3(id = 'prediction', style = {'order': '1', 'margin-top': '4vh'})], style = {'order': '2', 'width': '35%', 'margin': 'auto'})], style = {'display': 'flex', 'flex-direction': 'row', 'margin-top': '8vh', 'margin-bottom': '8vh'})
 
 @callback(Output('prediction', 'children'),
           Input('button', 'n_clicks'),
@@ -195,24 +189,36 @@ def render_tab_content(tab_value):
           Input('intake-age-days', 'value'),
           Input('sterilized', 'value'),
           Input('days-spent', 'value'),
-          Input('lat', 'value'),
-          Input('lon', 'value'),
+          Input('address', 'value'),
           Input('breed', 'value'),
           Input('coat-pattern', 'value'),
           Input('coat', 'value'),
           Input('intake-type', 'value'),
           Input('intake-condition', 'value'))
 def get_predictions(n_clicks, sex, has_name, intake_age_days, sterilized_intake, days_spent_at_shelter,
-                    lat, lon, breed, coat_pattern, coat, intake_type, intake_condition ):
+                    address, breed, coat_pattern, coat, intake_type, intake_condition ):
     if n_clicks > 0:
+        url_address = 'https://nominatim.openstreetmap.org/search?' 
+        response = requests.get(url_address, params = {'q' : address, 'format':'json'}).json()
+        lat, lon = response[0]['lat'], response[0]['lon']
         url = f"http://127.0.0.1:8000/predict?sex={sex}&coat_pattern={coat_pattern}&has_name={has_name}&breed={breed}&coat={coat}&intake_type={intake_type}&intake_condition={intake_condition}&intake_age_days={intake_age_days}&sterilized_intake={sterilized_intake}&days_spent_at_shelter={days_spent_at_shelter}&lat={lat}&lon={lon}"
         results = requests.get(url).json()
         prediction = results['prediction']
         #proba_0 = results['prob_0']
         proba_1 = results['prob_1']
         if prediction == 1:
-            return f'This cat is LIKELY to be adopted! ({round(proba_1, 2)*100}%)'
+            return html.Div([
+                html.Img(alt="Yaayyy",
+                                    src="assets/check.png",
+                                    style= {'width': '200px', 'height': '200px', 'order': '1', 'margin-bottom': '2vh'}),
+                html.P(f'This cat is LIKELY to be adopted! ({round(proba_1, 2)*100}%)', style = {'order':'2', 'font-weight':'normal', 'font-size': '18px', 'text-align': 'center'})],
+                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'})
         elif prediction == 0:
-            return f'This cat is NOT LIKELY to be adopted! ({round(proba_1, 2)*100}%)'
+            return html.Div([
+                html.Img(alt="Yaayyy",
+                                    src="assets/cross.png",
+                                    style= {'width': '200px', 'height': '200px', 'order': '1', 'margin-bottom': '2vh'}),
+                html.P(f'This cat is NOT LIKELY to be adopted! ({round(proba_1, 2)*100}%)', style = {'order':'2', 'font-weight':'normal', 'font-size': '18px', 'text-align': 'center'})],
+                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'})
         else:
             'API error'

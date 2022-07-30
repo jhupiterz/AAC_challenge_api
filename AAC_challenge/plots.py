@@ -104,6 +104,6 @@ def get_mapbox(df):
 def get_map_box(df):
     px.set_mapbox_access_token(open(".mapbox_token").read())
     fig = px.scatter_mapbox(df, lat="lat", lon="lon", center = {'lat': 30.266666, 'lon': -97.733330},
-                            color_continuous_scale=px.colors.cyclical.IceFire, zoom=10, opacity = 0.4,
-                            mapbox_style= 'outdoors', width = 800, height = 700, color = 'intake_age_days')
+                            zoom=10, opacity = 0.3,
+                            mapbox_style= 'outdoors', width = 800, height = 700)
     return fig

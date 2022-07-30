@@ -22,7 +22,7 @@ app.layout = html.Div([
                 dbc.Row(
                     [
                         dbc.Col(html.Img(src="/assets/aac.jpeg",
-                                         height="35px")),
+                                         height="50px"))
                     ],
                     align="center",
                     className="g-0",
@@ -30,10 +30,11 @@ app.layout = html.Div([
                 href="https://www.austintexas.gov/austin-animal-center",
                 style={"textDecoration": "none"},
             ),
+            html.P('AAC Data Explorer', style = {'margin-left': '-860px', 'margin-top': '15px', 'font-weight': 'bold', 'font-size': '20px', 'font-family': 'Arial, sans serif'}),
+            
             html.Div([
                 dbc.DropdownMenu(
                     children=[
-                        dbc.DropdownMenuItem("More pages", header=True),
                         dbc.DropdownMenuItem("Home", href="/"),
                         dbc.DropdownMenuItem("Explore", href="/explore"),
                         dbc.DropdownMenuItem("Predict", href='/predict'),
@@ -41,7 +42,9 @@ app.layout = html.Div([
                     ],
                     nav=True,
                     in_navbar=True,
-                    label="More",
+                    label="≡",
+                    size = 'lg',
+                    style = {'font-weight': 'bold', 'color': 'black', 'font-size': '35px'},
                 ),
             ], ),
         ])),

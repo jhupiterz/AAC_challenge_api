@@ -51,6 +51,29 @@ layout = html.Div(children=[
                 'align-items': 'center',
                 'justify-content': 'center',
                 'margin-right': '5vw'
+            }),
+        html.Div(
+            [
+                html.H3(children='Documentation',
+                        style={
+                            'order': '1',
+                            'color': 'black',
+                            'text-align': 'center'
+                        }),
+                html.A(href="/docs",
+                       children=[
+                           html.Img(alt="Documentation",
+                                    src="assets/docs.png",
+                                    className='zoom')
+                       ],
+                       className="blog-post-2")
+            ],
+            style={
+                'display': 'flex',
+                'flex-direction': 'column',
+                'align-items': 'center',
+                'justify-content': 'center',
+                'margin-right': '5vw'
             })
     ],
              className="blog-posts")
