@@ -211,14 +211,16 @@ def get_predictions(n_clicks, sex, has_name, intake_age_days, sterilized_intake,
                 html.Img(alt="Yaayyy",
                                     src="assets/check.png",
                                     style= {'width': '200px', 'height': '200px', 'order': '1', 'margin-bottom': '2vh'}),
-                html.P(f'This cat is LIKELY to be adopted! ({round(proba_1, 2)*100}%)', style = {'order':'2', 'font-weight':'normal', 'font-size': '18px', 'text-align': 'center'})],
-                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'})
+                html.P(f'This cat is LIKELY to be adopted! ({round(proba_1, 1)*100}%)', style = {'order':'2', 'font-weight':'bold', 'font-size': '22px', 'text-align': 'center', 'font-family': 'Arial, sans serif'}),
+                html.P(f'ℹ️ Cats that have a name and are sterilized are more likely to be adopted ℹ️', style = {'order':'3', 'font-weight':'normal', 'font-size': '18px', 'text-align': 'center', 'font-family': 'Arial, sans serif'})],
+                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'margin-right': '6vw'})
         elif prediction == 0:
             return html.Div([
                 html.Img(alt="Yaayyy",
                                     src="assets/cross.png",
                                     style= {'width': '200px', 'height': '200px', 'order': '1', 'margin-bottom': '2vh'}),
-                html.P(f'This cat is NOT LIKELY to be adopted! ({round(proba_1, 2)*100}%)', style = {'order':'2', 'font-weight':'normal', 'font-size': '18px', 'text-align': 'center'})],
-                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'})
+                html.P(f'This cat is NOT LIKELY to be adopted! ({round(proba_1, 1)*100}%)', style = {'order':'2', 'font-weight':'bold', 'font-size': '22px', 'text-align': 'center', 'font-family': 'Arial, sans serif'}),
+                html.P(f'ℹ️ Cats that have a name and are sterilized are more likely to be adopted ℹ️', style = {'order':'3', 'font-weight':'normal', 'font-size': '18px', 'text-align': 'center', 'font-family': 'Arial, sans serif'})],
+                style = {'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'margin-right': '6vw'})
         else:
             'API error'

@@ -49,7 +49,7 @@ def render_tab_content(tab_value, data):
                             dcc.Dropdown(id = 'map-dp1', value = 'All', options = ['All', 'Stray', 'Owner Surrender', 'Public Assist', 'Euthanasia Request'], placeholder = 'Intake type',  style = {'order': '1', 'width': '14vw', 'margin-right': '4vw'})]),
                         html.Div([   
                             html.Label('Intake condition', style={'font-weight': 'bold'}),
-                            dcc.Dropdown(id = 'map-dp2', value = 'All', options = ['All', 'Nursing', 'Normal', 'Sick', 'Injured', 'Feral', 'Pregnant', 'Other', 'Aged'], placeholder = 'Intake condition',  style = {'order': '2', 'width': '12vw'})])], style = {'order': '1', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '1vh', 'justify-content': 'space-around'}),
+                            dcc.Dropdown(id = 'map-dp2', value = 'All', options = ['All', 'Nursing', 'Normal', 'Sick', 'Injured', 'Feral', 'Pregnant', 'Other', 'Aged'], placeholder = 'Intake condition',  style = {'order': '2', 'width': '12vw'})])], style = {'order': '1', 'display': 'flex', 'flex-direction': 'row', 'margin-bottom': '0vh', 'justify-content': 'space-around'}),
                     html.Div(id = 'mapbox', children = [], style = {'order': '2', 'width': '50vw'})], style = {'order': '2', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'margin-left': '0vw'})],
             style = {'display': 'flex', 'flex-direction': 'row', 'align-items': 'center','width':'50%'})
 

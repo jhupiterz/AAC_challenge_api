@@ -38,7 +38,7 @@ app.layout = html.Div([
                         dbc.DropdownMenuItem("Home", href="/"),
                         dbc.DropdownMenuItem("Explore", href="/explore"),
                         dbc.DropdownMenuItem("Predict", href='/predict'),
-                        dbc.DropdownMenuItem("Documentation", href='/docs')
+                        dbc.DropdownMenuItem("Documentation", href='https://jhupiterz.notion.site/AAC-Data-Explorer-Documentation-af73e934772b4058a293e53b0d96728c', target = "_blank")
                     ],
                     nav=True,
                     in_navbar=True,
@@ -59,4 +59,4 @@ data = pd.DataFrame(merged_with_locations)
 
 # Runs the app ------------------------------------------------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader=True)
+    app.run_server(debug=False, use_reloader=True)

@@ -60,7 +60,8 @@ layout = html.Div(children=[
                             'color': 'black',
                             'text-align': 'center'
                         }),
-                html.A(href="/docs",
+                html.A(href="https://jhupiterz.notion.site/AAC-Data-Explorer-Documentation-af73e934772b4058a293e53b0d96728c",
+                       target = "_blank",
                        children=[
                            html.Img(alt="Documentation",
                                     src="assets/docs.png",
