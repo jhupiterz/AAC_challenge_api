@@ -73,7 +73,7 @@ def predict(sex, coat_pattern, has_name, breed, coat, intake_type, intake_condit
     X['lon'] = [lon]
     X = pd.concat([X, breed_df, coat_pattern_df, coat_df, intake_type_df, intake_condition_df], axis = 1)
 
-    loaded_model = pickle.load(open('app/gbc_model.sav', 'rb'))
+    loaded_model = pickle.load(open('app/boosting_model.sav', 'rb'))
     pred = int(loaded_model.predict(X)[0])
     proba_0 = loaded_model.predict_proba(X)[0][0]
     proba_1 = loaded_model.predict_proba(X)[0][1]
